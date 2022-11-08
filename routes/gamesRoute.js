@@ -11,7 +11,9 @@ router
     .route('/')
     .get((req, res) => {
         const gamesJson = JSON.parse(games);
-        const gamesList = gamesJson.map(({ id, name, background_image, status }) => ({ id, name, background_image, status }));
+        const gamesList = gamesJson.map
+        (({ id, name, background_image, status, description, description_raw, website, metacritic_url, esrb_rating, reddit_url, released, rating, genres, platforms }) => 
+        ({ id, name, background_image, status, description, description_raw, website, metacritic_url, esrb_rating, reddit_url, released, rating, genres, platforms }));
 
         res.send(gamesList);
     })
@@ -50,10 +52,17 @@ router
         // const game = JSON.parse(games).find(({ id }) => id === req.params.id);
         // console.log(game)
         // res.send(game);
-        const [selectedGame] = gamesData.filter(
-            (game) => game.id === req.params.id
-        );
-        res.json(selectedGame)
+        //
+        // const [selectedGame] = gamesData.filter(
+        //     (game) => game.id === req.params.id
+        // );
+        // res.json(selectedGame)
+        //
+        const gameData = JSON.parse(games);
+        const filteredGame = gameData.filter((game) => game.id === req.params.id);
+        res.json({
+            game: filteredGame
+        })
     })
     .put((req, res) => {
         const updatedGame = gamesData.findIndex((game) => game.id === req.params.id);
