@@ -46,51 +46,51 @@ router
         res.sendStatus(200);
     })
 
-router
-    .route('/:id')
-    .get((req, res) => {
-        // const game = JSON.parse(games).find(({ id }) => id === req.params.id);
-        // console.log(game)
-        // res.send(game);
-        //
-        // const [selectedGame] = gamesData.filter(
-        //     (game) => game.id === req.params.id
-        // );
-        // res.json(selectedGame)
-        //
-        const gameData = JSON.parse(games);
-        const filteredGame = gameData.filter((game) => game.id === req.params.id);
-        res.json({
-            game: filteredGame
-        })
-    })
-    .put((req, res) => {
-        const updatedGame = gamesData.findIndex((game) => game.id === req.params.id);
+// router
+//     .route('/:id')
+//     .get((req, res) => {
+//         const game = JSON.parse(games).find(({ id }) => id === req.params.id);
+//         console.log(game)
+//         res.send(game);
+        
+//         const [selectedGame] = gamesData.filter(
+//             (game) => game.id === req.params.id
+//         );
+//         res.json(selectedGame)
+        
+//         const gameData = JSON.parse(games);
+//         const filteredGame = gameData.filter((game) => game.id === req.params.id);
+//         res.json({
+//             game: filteredGame
+//         })
+//     })
+//     .put((req, res) => {
+//         const updatedGame = gamesData.findIndex((game) => game.id === req.params.id);
 
-        fs.writeFile(
-            './data/games.json',
-            JSON.stringify(Object.assign([...gamesData], { [updatedGame]: req.body })),
-            (err) => {
-                if (!err) {
-                    console.log('Updated status!')
-                }
-            }
-        );
-        console.log(req.body);
-        res.sendStatus(200);
-    })
-    .delete((req, res) => {
-        const gameExists = gamesData.find((game) => game.id === req.params.id);
+//         fs.writeFile(
+//             './data/games.json',
+//             JSON.stringify(Object.assign([...gamesData], { [updatedGame]: req.body })),
+//             (err) => {
+//                 if (!err) {
+//                     console.log('Updated status!')
+//                 }
+//             }
+//         );
+//         console.log(req.body);
+//         res.sendStatus(200);
+//     })
+//     .delete((req, res) => {
+//         const gameExists = gamesData.find((game) => game.id === req.params.id);
 
-        if (!gameExists) {
-            res.status(404).send('Game does not exist!');
-        } else {
-            const updatedGamesData = gamesData.filter(
-                (games) => games.id !== req.params.id
-            );
-            res.send(`Deleted game with ID ${req.params.id} `)
-            fs.writeFileSync('./data/games.json', JSON.stringify(updatedGamesData));
-        }
-    })
+//         if (!gameExists) {
+//             res.status(404).send('Game does not exist!');
+//         } else {
+//             const updatedGamesData = gamesData.filter(
+//                 (games) => games.id !== req.params.id
+//             );
+//             res.send(`Deleted game with ID ${req.params.id} `)
+//             fs.writeFileSync('./data/games.json', JSON.stringify(updatedGamesData));
+//         }
+//     })
 
 module.exports = router;

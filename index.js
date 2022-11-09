@@ -3,6 +3,7 @@ const cors = require('cors');
 const PORT = process.env.PORT || 8080;
 const app = express();
 const jwt = require('jsonwebtoken');
+const fs = require("fs");
 
 require('dotenv').config();
 
@@ -17,14 +18,8 @@ app.get('/', (_req, res) => {
 const gamesRoute = require('./routes/gamesRoute')
 app.use('/games', gamesRoute)
 
-app.listen(
-  PORT,
-  console.log(`listening on ${PORT}`)
-)
-
-
-
-
+const profileRoute = require('./routes/profileRoute');
+app.use('/profile', profileRoute)
 
 const secretKey = 'a752e1933bee9144efbdbeff2b831345f8843c125ce6af70840f4106ef6fad90'
 
@@ -46,28 +41,44 @@ function authorize(req, res, next) {
   })
 }
 
-const users = {};
+const users = JSON.parse(fs.readFileSync('./data/users.json'));
+
+const getUser = (username) => users.find((user) => user.username === username);
 
 app.post('/register', (req, res) => {
-  const { username, name, password } = req.body;
-  users[username] = {
-    name,
-    password
-  };
-  res.json({ success: 'true' });
+  // const { username, name, password } = req.body;
+  // users[username] = {
+  //   name,
+  //   password
+  // };
+  // res.json({ success: 'true' });
+  users.push(req.body);
+  res.json({ success: true });
 });
 
-// A Basic Login end point
+// Login end point
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  const user = users[username];
-  if (user && user.password === password) {
-      const token = jwt.sign({name:user.name, username }, secretKey);
+  // const user = users[username];
+  const user = getUser(username)
 
+  if (!!user && user.password === password) {
+      const token = jwt.sign({ name: user.name }, secretKey);
       res.json({token})
+  } else {
+    res.status(401).json({
+      error: {
+        message: "Login failed",
+      },
+    });
   }
 });
 
-app.get('/profile', authorize, (req, res) => {
+app.get('/user', authorize, (req, res) => {
   res.json(req.decoded);
 });
+
+app.listen(
+  PORT,
+  console.log(`listening on ${PORT}`)
+)
