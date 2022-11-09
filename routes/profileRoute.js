@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const fs = require("fs");
-const jwt = require("jsonwebtoken");
-// const knex = require("knex")(require("../knexfile"));
-// require("dotenv").config();
 const gamesData = require('../data/games.json');
 const games = fs.readFileSync('./data/games.json');
 
 router
     .route('/')
-    .get((req, res) => {
+    .get((_req, res) => {
         const gamesJson = JSON.parse(games);
         const gamesList = gamesJson.map
             (({ id, name, background_image, status, description, description_raw, website, metacritic_url, esrb_rating, reddit_url, released, rating, genres, platforms }) =>
@@ -21,20 +18,10 @@ router
 router
     .route('/:id')
     .get((req, res) => {
-        // const game = JSON.parse(games).find(({ id }) => id === req.params.id);
-        // console.log(game)
-        // res.send(game);
-        //
         const [selectedGame] = gamesData.filter(
             (game) => game.id === req.params.id
         );
         res.json(selectedGame)
-        //
-        // const gameData = JSON.parse(games);
-        // const filteredGame = gameData.filter((game) => game.id === req.params.id);
-        // res.json({
-        //     game: filteredGame
-        // })
     })
     .patch((req, res) => {
         const updatedGame = gamesData.findIndex((game) => game.id === req.params.id);
